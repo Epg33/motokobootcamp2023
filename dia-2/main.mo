@@ -3,6 +3,8 @@ import Char "mo:base/Char";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
+import Nat "mo:base/Nat";
+import Debug "mo:base/Debug";
 
 actor {
   //1. Write a function average_array that takes an array of integers and returns the average value of the elements in the array.
@@ -48,43 +50,33 @@ actor {
   };
 
   //5. Write a function find_duplicates that takes an array of natural numbers and returns a new array containing all duplicate numbers. The order of the elements in the returned array should be the same as the order of the first occurrence in the input array.
-  public func find_duplicatess (nums : [Nat] ) : async [Nat] {
-    var size : Nat = 0;
-    for (num in nums.vals()) {
-      for (val in arr.vals() ) {
-        if (val == num ) {
-          size := size + 1; 
-          Array.chain(duplicates, Array.make(val));
+  public func find_duplicates(a : [Nat]) : async [Nat]{
+    var numbers = Buffer.Buffer<Nat>(0);
+    var repeat : Nat = 0;
+    var contain : Bool = false;
+    for(num in a.vals()){
+      for(num2 in a.vals()){
+        if(num == num2){
+          repeat := repeat + 1;
         };
       };
+      if(repeat > 1){
+        contain := Buffer.contains<Nat>(numbers, num, func (x : Nat, y: Nat) : Bool {x==y});
+        repeat := 0;
+        if(contain != true){
+            numbers.add(num);
+        }; 
+      };
+      repeat := 0;
     };
-
-    let arr : [ var Nat ] = Array.init<Nat>(size, 3);
-    return nums;
+    return Buffer.toArray(numbers);
   };
 
-
-
-
-
-
-
-  public func find_duplicates(a : [Nat]) : async [Nat]{
-    var buffer = Buffer.Buffer<Nat>(3);
-    for (num in a.vals()){
-      for (num2 in a.vals()){
-        if(num==num2){
-          if(Buffer.contains(num)){
-            null;
-          }else {
-            buffer.add(num2);
-          }
-          
-        };
-      };
-    }; 
-    let arr = buffer.toVarArray();
-    let newArr = Array.freeze<Nat>(arr);
-   return newArr;
-  }
+  //6. Write a function convert_to_binary that takes a natural number n and returns a string representing the binary representation of n.
+  public func convert_to_binary(n : Nat) : async Text{
+    var num : Text = Nat.toText(n);
+    var blob : Blob = Text.encodeUtf8(num);
+    Debug.print(debug_show(blob));
+    return debug_show(blob);
+  };
 };
